@@ -1,4 +1,6 @@
 import {BelongsToMany, Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
+import { Messege } from "src/messeges/messeges.model";
+import { UserMesseges } from "src/messeges/user-messeges.model";
 
 interface UserCreationAttrs {
     email: string;
@@ -23,4 +25,6 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({type: DataType.STRING, allowNull: true})
     banReason: string;
 
+    @BelongsToMany(() => Messege, () => UserMesseges)
+    messeges: Messege[];
 }

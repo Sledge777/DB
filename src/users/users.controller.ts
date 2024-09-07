@@ -16,4 +16,9 @@ export class UsersController {
     getAll() {
         return this.usersService.getAllUsers();
     }
+    
+    @Post('/find')
+    FindOne(@Body() body: { email: string }) {
+        return this.usersService.getContactByEmail(body.email)
+    }
 }
