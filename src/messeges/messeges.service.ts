@@ -3,13 +3,15 @@ import { CreateMessegeDto } from './dto/create-messeges.dto';
 import { InjectModel } from "@nestjs/sequelize";
 import { Messege } from './messeges.model';
 import { UsersService } from 'src/users/users.service';
+import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class MessegeService {
 
     constructor(
         @InjectModel(Messege) private messegeRepository: typeof Messege,
-        private userService: UsersService
+        private userService: UsersService,
+        private ChatGateway: ChatGateway,
     ) {}
 
     async sendMessege(dto: CreateMessegeDto) {
@@ -22,9 +24,11 @@ export class MessegeService {
 
         const messege = await this.messegeRepository.create(dto);
         
-        await sender.$add('messeges', messege.id);
-        await reciever.$add('messeges', messege.id);
+        // await sender.$add('messeges', messege.id);
+        // await reciever.$add('messeges', messege.id); - способ добавления сообщений к пользователям вручную
 
+        this.ChatGateway.server.to(reciever.id.toString()).emit('receiveMessage', messege);
+        // способ через "шлюз" aka gateway сокета
         return messege;
     }
 

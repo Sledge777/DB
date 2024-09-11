@@ -6,9 +6,10 @@ import { Messege } from './messeges.model';
 import {User} from "../users/users.model";
 import { UserMesseges } from './user-messeges.model';
 import { UsersModule } from 'src/users/users.module';
+import { ChatGateway } from './chat.gateway';
 
 @Module({
-  providers: [MessegeService],
+  providers: [MessegeService, ChatGateway],
   controllers: [MessegeController],
   imports: [
     SequelizeModule.forFeature([Messege, User, UserMesseges]),

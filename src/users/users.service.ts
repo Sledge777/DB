@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {User} from "./users.model";
 import {InjectModel} from "@nestjs/sequelize";
 import {CreateUserDto} from "./dto/create-user.dto";
@@ -25,6 +25,9 @@ export class UsersService {
 
     async getContactByEmail(email: string) {
         const user = await this.userRepository.findOne({where: {email}, include: {all: true}})
-        return user.email;
+        if(user) {
+            return user.email;
+        }
+        throw new HttpException('получатель не существует', HttpStatus.BAD_REQUEST);
     }
 }
