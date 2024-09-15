@@ -15,10 +15,10 @@ import { UserMesseges } from "./messeges/user-messeges.model";
     providers: [],
     imports: [
         ConfigModule.forRoot({
-           envFilePath: `.${process.env.NODE_ENV}.env`
+            envFilePath: `.${process.env.NODE_ENV}.env`
         }),
         ServeStaticModule.forRoot({
-            rootPath: path.resolve( __dirname, 'static'),
+            rootPath: path.resolve(__dirname, 'static'),
         }),
         SequelizeModule.forRoot({
             dialect: 'postgres',
@@ -27,7 +27,7 @@ import { UserMesseges } from "./messeges/user-messeges.model";
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRESS_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [User,Messege,UserMesseges],
+            models: [User, Messege, UserMesseges],
             autoLoadModels: true
         }),
         UsersModule,
@@ -35,4 +35,4 @@ import { UserMesseges } from "./messeges/user-messeges.model";
         MessegeModule
     ]
 })
-export class AppModule {}
+export class AppModule { }

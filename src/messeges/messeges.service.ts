@@ -12,7 +12,7 @@ export class MessegeService {
         @InjectModel(Messege) private messegeRepository: typeof Messege,
         private userService: UsersService,
         private ChatGateway: ChatGateway,
-    ) {}
+    ) { }
 
     async sendMessege(dto: CreateMessegeDto) {
         const sender = await this.userService.getUserByEmail(dto.sendername);
@@ -23,12 +23,8 @@ export class MessegeService {
         }
 
         const messege = await this.messegeRepository.create(dto);
-        
-        // await sender.$add('messeges', messege.id);
-        // await reciever.$add('messeges', messege.id); - способ добавления сообщений к пользователям вручную
 
         this.ChatGateway.server.to(reciever.id.toString()).emit('receiveMessage', messege);
-        // способ через "шлюз" aka gateway сокета
         return messege;
     }
 

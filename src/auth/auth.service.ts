@@ -1,15 +1,15 @@
-import {HttpException, HttpStatus, Injectable, UnauthorizedException} from '@nestjs/common';
-import {CreateUserDto} from "../users/dto/create-user.dto";
-import {UsersService} from "../users/users.service";
-import {JwtService} from "@nestjs/jwt";
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CreateUserDto } from "../users/dto/create-user.dto";
+import { UsersService } from "../users/users.service";
+import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcryptjs'
-import {User} from "../users/users.model";
+import { User } from "../users/users.model";
 
 @Injectable()
 export class AuthService {
 
     constructor(private userService: UsersService,
-                private jwtService: JwtService) {}
+        private jwtService: JwtService) { }
 
     async login(userDto: CreateUserDto) {
         const user = await this.validateUser(userDto)
@@ -22,13 +22,13 @@ export class AuthService {
             throw new HttpException('Пользователь с таким email существует', HttpStatus.BAD_REQUEST);
         }
         const hashPassword = await bcrypt.hash(userDto.password, 5);
-        const user = await this.userService.createUser({...userDto, password: hashPassword})
+        const user = await this.userService.createUser({ ...userDto, password: hashPassword })
         console.log(user)
         return this.generateToken(user)
     }
 
     private async generateToken(user: User) {
-        const payload = {email: user.email, id: user.id}
+        const payload = { email: user.email, id: user.id }
         return {
             token: this.jwtService.sign(payload)
         }
@@ -40,6 +40,6 @@ export class AuthService {
         if (user && passwordEquals) {
             return user;
         }
-        throw new UnauthorizedException({message: 'Некорректная почта или пароль'})
+        throw new UnauthorizedException({ message: 'Некорректная почта или пароль' })
     }
 }

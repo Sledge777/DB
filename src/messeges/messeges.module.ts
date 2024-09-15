@@ -1,9 +1,9 @@
-import {Module} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MessegeService } from './messeges.service';
 import { MessegeController } from './messeges.controller';
-import {SequelizeModule} from "@nestjs/sequelize";
+import { SequelizeModule } from "@nestjs/sequelize";
 import { Messege } from './messeges.model';
-import {User} from "../users/users.model";
+import { User } from "../users/users.model";
 import { UserMesseges } from './user-messeges.model';
 import { UsersModule } from 'src/users/users.module';
 import { ChatGateway } from './chat.gateway';
@@ -19,4 +19,4 @@ import { ChatGateway } from './chat.gateway';
     MessegeService
   ]
 })
-export class MessegeModule {}
+export class MessegeModule { }

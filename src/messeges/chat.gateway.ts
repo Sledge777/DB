@@ -1,4 +1,5 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { Messege } from './messeges.model';
 import { UsersService } from '../users/users.service';
@@ -8,16 +9,15 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly userService: UsersService) {}
+  constructor(private readonly userService: UsersService) { }
 
   @SubscribeMessage('sendMessage')
   async handleMessage(@MessageBody() message: { sendername: string; receivername: string; content: string }, @ConnectedSocket() client: Socket): Promise<void> {
-    // Создание сообщения в базе данных
     const sender = await this.userService.getUserByEmail(message.sendername);
     const receiver = await this.userService.getUserByEmail(message.receivername);
 
     if (!sender || !receiver) {
-      return; // Обработка ошибки, если один из пользователей не найден
+      throw new HttpException('Отправитель или получатель не существует', HttpStatus.BAD_GATEWAY)
     }
 
     const messege = await Messege.create({
@@ -31,7 +31,7 @@ export class ChatGateway {
     client.emit('receiveMessage', messege);
 
     // Отправка сообщения в комнату получателя
-    this.server.to(receiver.id.toString()).emit('receiveMessage', messege); 
+    this.server.to(receiver.id.toString()).emit('receiveMessage', messege);
   }
 
   @SubscribeMessage('joinRoom')
