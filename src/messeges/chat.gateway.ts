@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 import { Messege } from './messeges.model';
 import { UsersService } from '../users/users.service';
 
-@WebSocketGateway(3000, { cors: { origin: "*" } })
+@WebSocketGateway(3000, { cors: { origin: "*", methods: ["GET", "POST"]} })
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
@@ -27,20 +27,19 @@ export class ChatGateway {
     });
     console.log('Сообщение создано и отправлено в комнату:', receiver.id.toString());
 
-    // Отправка сообщения отправителю
     client.emit('receiveMessage', messege);
 
-    // Отправка сообщения в комнату получателя
     this.server.to(receiver.id.toString()).emit('receiveMessage', messege);
   }
 
   @SubscribeMessage('joinRoom')
   handleJoinRoom(@MessageBody() userId: string, @ConnectedSocket() client: Socket): void {
-    client.join(userId); // Подключение пользователя к комнате по его идентификатору
+    console.log(`Пользователь с ID ${userId} подключен к комнате`);
+    client.join(userId);
   }
 
   @SubscribeMessage('leaveRoom')
   handleLeaveRoom(@MessageBody() userId: string, @ConnectedSocket() client: Socket): void {
-    client.leave(userId); // Отключение пользователя от комнаты по его идентификатору
+    client.leave(userId);
   }
 }
